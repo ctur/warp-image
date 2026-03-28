@@ -1,0 +1,35 @@
+[package]
+name = "warp-core"
+version = "0.1.0"
+edition = "2021"
+description = "Image processing core for warp-image, compiled to WebAssembly"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
+js-sys = "0.3"
+# SIMD-accelerated resize (Wasm32 SIMD128 support built-in)
+fast_image_resize = { version = "6", features = ["image"] }
+# Pure-Rust mozjpeg encoder (trellis quantization, faster & smaller output)
+mozjpeg-rs = { version = "0.9", default-features = false }
+
+[package.metadata.wasm-pack.profile.release]
+# -O4: more aggressive optimisation than -O3 (additional inlining + loop transforms)
+# --converge: re-run all passes until no further changes (useful for hot codec loops)
+# Feature flags that must match what rustc emits with target-feature=+simd128:
+#   --enable-simd              : SIMD128 intrinsics (fast_image_resize, mozjpeg-rs DCT)
+#   --enable-bulk-memory       : memory.copy / memory.fill (emitted by rustc std alloc)
+#   --enable-nontrapping-float-to-int : i32.trunc_sat_f32 (emitted by image/resize math)
+# All three are enabled in Node.js v18+ / V8 by default; enabling them in
+# wasm-opt lets the optimizer reason across SIMD and memory ops for better codegen.
+wasm-opt = ["-O4", "--converge", "--enable-simd", "--enable-bulk-memory", "--enable-nontrapping-float-to-int"]
+
+[profile.release]
+opt-level = 3        # optimize for speed (was "z" for size; see PLAN.md §3.5)
+lto = true
+codegen-units = 1
+strip = true
