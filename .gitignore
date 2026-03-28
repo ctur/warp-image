@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+target/
+
+# pnpm
+.pnpm-store/
+package-lock.json
+
+# Claude Code internal state
+.claude/
+
+# Editor / AI tool configs
+opencode.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage/
+
+# Env
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Rust
+**/*.rs.bk
+
+# wasm-pack
+pkg/

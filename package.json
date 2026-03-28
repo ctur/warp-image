@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "build:wasm": "bash scripts/build-wasm.sh",
+    "build:ts": "pnpm --filter warp-image build",
+    "build": "pnpm build:wasm && pnpm build:ts",
+    "test": "pnpm --filter warp-image test",
+    "lint": "pnpm --filter warp-image lint",
+    "clean": "rm -rf crates/warp-core/target packages/warp-image/wasm packages/warp-image/dist"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9"
+  }
+}
